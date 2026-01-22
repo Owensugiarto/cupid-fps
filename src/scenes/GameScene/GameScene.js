@@ -1,7 +1,6 @@
 // src/scenes/GameScene/GameScene.js
 
 import { W, H, COLORS, RULES } from '../../constants.js';
-
 import { buildUI } from './ui.js';
 import { buildMap } from './map.js';
 import { buildCrosshair } from './crosshair.js';
@@ -49,6 +48,14 @@ export default class GameScene extends Phaser.Scene {
     initTargets(this);
     buildCrosshair(this);
     buildPauseOverlay(this);
+    // ESC to toggle pause
+    this.input.keyboard.on('keydown-ESC', () => {
+      if (this.isPaused) {
+        closePauseOverlay(this);
+      } else {
+        openPauseOverlay(this);
+      }
+    });
 
     // this.input.on('pointermove', (pointer) => {
     //   if (this.isPaused) return;
