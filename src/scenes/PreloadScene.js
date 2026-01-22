@@ -34,7 +34,19 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('target_good', 'assets/targets/shootthetarget.png');
     this.load.image('target_bad', 'assets/targets/dontshoottarget.png');
 
+    // --- AUDIO (preload all sounds) ---
+    this.load.audio('menu_bgm', 'assets/audio/menu_bgm.mp3');
+    this.load.audio('game_bgm', 'assets/audio/game_bgm.mp3');
 
+    this.load.audio('game_over', 'assets/audio/game_over.mp3');
+
+    this.load.audio('shoot_devil', 'assets/audio/shoot_devil.mp3');
+    this.load.audio('shoot_angel', 'assets/audio/shoot_angel.mp3');
+    this.load.audio('miss_or_furniture', 'assets/audio/miss_or_furniture.mp3');
+
+    this.load.audio('button_click', 'assets/audio/button_click.mp3');
+
+    this.load.audio('devil_laugh_loop', 'assets/audio/devil_laugh_loop.mp3');
 
 
   }

@@ -1,6 +1,7 @@
-import { W, H } from '../constants.js';
+import { W, H, AUDIO } from '../constants.js';
 import { addFloat } from '../helpers/tweens.js';
 import { createImageButton } from '../helpers/uiButtons.js';
+
 
 
 export class HomeScene extends Phaser.Scene {
@@ -9,17 +10,40 @@ export class HomeScene extends Phaser.Scene {
   create() {
     const bg = this.add.image(W / 2, H / 2, 'home_bg');
     bg.setDisplaySize(W, H);
+    // Menu background music
+    this.menuBgm = this.sound.add('menu_bgm', {
+      loop: true,
+      volume: AUDIO.volMenuBgm,
+    });
+    this.sfx = this.sfx || {};
+    this.sfx.buttonClick = this.sound.add('button_click', { volume: AUDIO.volButtonClick });
+
+    this.playButtonClick = () => {
+      const s = this.sfx.buttonClick;
+      if (!s) return;
+      if (s.isPlaying) s.stop();
+      s.play();
+    };
+
+
+    this.menuBgm.play();
+
 
     const leftCupid = this.add.image(190, 320, 'angel_left').setScale(0.45);
     const rightCupid = this.add.image(770, 430, 'angel_right').setScale(0.45);
     addFloat(this, leftCupid, 10, 1600);
     addFloat(this, rightCupid, 8, 1400);
 
+
     const playBase = 0.3;
     createImageButton(this, W / 2, 280, 'btn_play', {
       baseScale: playBase,
       hoverScale: playBase * 1.1,
-      onClick: () => this.scene.start('GameScene'),
+          onClick: () => {
+      this.menuBgm.stop();
+      this.scene.start('GameScene');
+    },
+
     });
 
     const howBase = 0.35;

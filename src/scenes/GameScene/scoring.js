@@ -21,7 +21,7 @@ export function handlePointerDown(scene, pointer) {
   for (const obj of hits) {
     if (!obj) continue;
     if (obj.getData && obj.getData('isTarget')) {
-      targetObj = obj; // sprite is interactive now
+      targetObj = obj;
       break;
     }
   }
@@ -37,15 +37,17 @@ export function handlePointerDown(scene, pointer) {
 
   // Not a target -> furniture vs air
   if (scene.isPointInFurniture && scene.isPointInFurniture(pointer.x, pointer.y)) {
+    if (scene.playMissSfx) scene.playMissSfx();
     applyPenalty(scene, 'Hit furniture');
     return;
   }
 
+  if (scene.playMissSfx) scene.playMissSfx();
   applyPenalty(scene, 'Missed');
 }
 
 function ensureComboState(scene) {
-  if (scene.comboMult == null) scene.comboMult = 1;   // 1,2,4,8,...
+  if (scene.comboMult == null) scene.comboMult = 1;
 }
 
 function resetCombo(scene) {
@@ -64,12 +66,15 @@ function handleTargetHit(scene, t) {
   const isAngel = t.isFake === true;
 
   if (isAngel) {
+    if (scene.playShootAngel) scene.playShootAngel();
     applyPenalty(scene, 'Hit angel');
     removeTarget(scene, t);
     return;
   }
 
-  // Devil (good): award score with doubling combo
+  // Devil (good)
+  if (scene.playShootDevil) scene.playShootDevil();
+
   const base = RULES.baseHitScore ?? 100;
   const mult = scene.comboMult;
 
@@ -97,16 +102,11 @@ function handleTargetHit(scene, t) {
 }
 
 function applyPenalty(scene, reason) {
-  // Any penalty breaks combo
   resetCombo(scene);
 
-  // Lose 1 life
   scene.lives = Math.max(0, (scene.lives ?? 0) - 1);
-
-  // Lose 10% of CURRENT time
   scene.timeLeft = Math.max(0, Math.floor((scene.timeLeft ?? 0) * 0.9));
 
-  // Update UI
   if (scene.livesText) scene.livesText.setText(`Lives: ${'♥'.repeat(scene.lives)}`);
   if (scene.timerText) scene.timerText.setText(`Time: ${scene.timeLeft}`);
 
@@ -117,7 +117,6 @@ function applyPenalty(scene, reason) {
     });
   }
 
-  // End round if dead or out of time
   if (scene.lives <= 0 || scene.timeLeft <= 0) {
     if (scene.endRound) scene.endRound();
   }

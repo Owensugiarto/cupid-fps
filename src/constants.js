@@ -12,6 +12,21 @@ export const COLORS = {
   accent: '#ff4d8d',
 };
 
+export const AUDIO = {
+  volMenuBgm: 0.10,
+  volGameBgm: 0.40,
+
+  volShootDevil: 0.9,
+  volShootAngel: 0.9,
+  volMiss: 0.8,
+
+  volButtonClick: 3.0,
+  volGameOver: 1.0,
+
+  volDevilLaugh: 0.55,
+};
+
+
 export const RULES = {
   startTime: 60,
   missTimePenalty: 5,

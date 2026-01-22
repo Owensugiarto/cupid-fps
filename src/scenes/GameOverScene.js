@@ -1,4 +1,4 @@
-import { W, H } from '../constants.js';
+import { W, H, AUDIO } from '../constants.js';
 
 export class GameOverScene extends Phaser.Scene {
   constructor() {
@@ -11,6 +11,28 @@ export class GameOverScene extends Phaser.Scene {
   }
 
   create() {
+    // ===============================
+    // Play Game Over SFX (once)
+    // ===============================
+    this.gameOverSfx = this.sound.add('game_over', { volume: AUDIO.volGameOver });
+    this.gameOverSfx.play();
+
+    // Helper for click sound in this scene
+    this.playButtonClick = () => {
+      // No stacking spam
+      if (!this._btnSfx) {
+        this._btnSfx = this.sound.add('button_click', { volume: AUDIO.volButtonClick });
+      }
+      if (this._btnSfx.isPlaying) this._btnSfx.stop();
+      this._btnSfx.play();
+    };
+
+    // Clean up on shutdown (optional but safe)
+    this.events.once('shutdown', () => {
+      if (this.gameOverSfx && this.gameOverSfx.isPlaying) this.gameOverSfx.stop();
+      if (this._btnSfx && this._btnSfx.isPlaying) this._btnSfx.stop();
+    });
+
     // ===============================
     // Background UI
     // ===============================
@@ -67,7 +89,10 @@ export class GameOverScene extends Phaser.Scene {
       });
 
       // Click
-      btn.on('pointerup', onClick);
+      btn.on('pointerup', () => {
+        this.playButtonClick();
+        onClick();
+      });
 
       return btn;
     };
